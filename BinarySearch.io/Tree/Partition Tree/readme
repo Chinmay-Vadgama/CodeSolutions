@@ -1,0 +1,95 @@
+Given the root to a binary tree root, return a list of two numbers where the first number is the number of leaves in the tree and the second number is the number of internal (non-leaf) nodes.
+
+Ex. root = {val: 1, left: {val: 5, left: null, right: null}, right: {val: 3, left: null, right: null}}
+    Ans : [2,1]
+    
+    
+Code C++ :
+
+#include "solution.hpp"
+using namespace std;
+
+/**
+ * class Tree {
+ *     public:
+ *         int val;
+ *         Tree *left;
+ *         Tree *right;
+ * };
+ */
+class Solution {
+    public:
+    vector<int> dfs(Tree* root, vector<int> ans)
+    {
+        if(root==NULL)
+        {
+            return ans;
+        }
+        else if(root->left==NULL && root->right!=NULL)
+        {
+            vector<int> right = dfs(root->right,ans);
+            right[1]+=1;
+            return right;
+        }
+         else if(root->left!=NULL && root->right==NULL)
+        {
+            vector<int> left = dfs(root->left,ans);
+            left[1]+=1;
+            return left;
+        }
+         else if(root->left==NULL && root->right==NULL)
+        {
+            ans[0]+=1;
+            return ans;
+        }
+        else
+        {
+            vector<int> right = dfs(root->right,ans);
+            vector<int> left = dfs(root->left,ans);
+            ans[0] = left[0] + right[0];
+            ans[1] = left[1] + right[1] + 1;
+            return ans;   
+        }
+        
+    }
+    public:
+    vector<int> solve(Tree* root) {
+        // Write your code here
+        ios_base::sync_with_stdio(false);
+        vector<int> ans {0,0};
+        return dfs(root,ans);
+        
+    }
+};
+
+
+
+Code : Python 
+
+# class Tree:
+#     def __init__(self, val, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def dfs(self,root, ans):
+        if root is None:
+            return ans
+        elif root.left is None and root.right is None:
+            return [ans[0]+1, ans[1]]
+        elif root.left is not None and root.right is None:
+            left = self.dfs(root.left, ans)
+            return [left[0],left[1]+1]
+        elif root.left is None and root.right is not None:
+            right = self.dfs(root.right, ans)
+            return [right[0],right[1]+1]
+        else:
+            left = self.dfs(root.left, ans)
+            right = self.dfs(root.right, ans)
+            return ([left[0]+right[0], left[1]+right[1]+1])
+        
+    def solve(self, root):
+        # Write your code here
+        ans = [0,0]
+        return self.dfs(root,ans);
+
